@@ -36,7 +36,6 @@ def search_srt():
         os.system("clear||cls")
         for num, item in enumerate(cat_urls, 1):
             print(f"\t[{num}]. {item[0]}")
-            sleep(0.1)
         try:
             choosed = int(input("\nEnter NUMBER > "))
             if choosed <= len(cat_urls):
@@ -82,7 +81,7 @@ def subtitles_list(url):
         sleep(1)
         for num, srt in enumerate(eng_srt, 1):
             print(f"\t[{num}]. {srt[1]}")
-            sleep(0.1)
+            sleep(0.075)
         try:
             chosen = int(input("\n\tEnter NUMBER > "))
             if chosen <= len(lang_dict["English"]):
