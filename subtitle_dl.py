@@ -36,7 +36,7 @@ def search_srt():
         os.system("clear||cls")
 
         for num, item in enumerate(cat_urls, 1):
-            print(f"\t[{num}]. {item[0]}")
+            print("\t[{}]. {}".format(num,item[0]))
 
         try:
             choosed = int(input("\nEnter NUMBER > "))
@@ -44,7 +44,7 @@ def search_srt():
                 break
         except ValueError:
             pass
-    print(f"\nYou have choosen {cat_urls[choosed-1][0]}")
+    print("\nYou have choosen {}".format(cat_urls[choosed-1][0]))
     subtitles_list(cat_urls[choosed-1][1])
 
 
@@ -84,17 +84,17 @@ def subtitles_list(url):
 
     while True:
         os.system("clear||cls")
-        print(f"\n{len(eng_srt)} subtitles were found:\n")
+        print("\n{} subtitles were found:\n".format(len(eng_srt)))
 
         selected_start = page_size * (page_cntr - 1)
         selected_end = page_size * page_cntr
         sleep(1)
 
         for num, srt in enumerate(eng_srt[selected_start:selected_end], selected_start + 1):
-            print(f"\t[{num}]. {srt[1]}")
+            print("\t[{}]. {}".format(num,srt[1]))
             sleep(0.075)
 
-        print(f"\n\tEnter NUMBER or n for the next page ({page_cntr}/{page_max})")
+        print("\n\tEnter NUMBER or n for the next page ({}/{})".format(page_cntr,page_max))
         chosen = input("\n\tEnter NUMBER> ")
         if chosen == 'n':
             if page_cntr >= page_max:
@@ -111,7 +111,14 @@ def subtitles_list(url):
 
     os.system("clear||cls")
     print("\n\n\tYou have choosen {}".format(eng_srt[chosen-1][1]))
-    download_srt(eng_srt[chosen-1][0])
+    down_path = input('\tChoose download directory:')
+    while not os.path.isdir(down_path) or not os.access(down_path,os.W_OK):
+        if not os.access(down_path,os.W_OK):
+            down_path = input('\tWrite permission not available.\nChoose another directory:')
+        elif not os.path.is_dir(down_path):
+            down_path = input('\tDirectory does not exists.\nChoose download directory:')
+        
+    download_srt(eng_srt[chosen-1][0],down_path)
 
 
     # # language selection
@@ -133,22 +140,21 @@ def subtitles_list(url):
 
 
 
-def download_srt(srt_url):
+def download_srt(srt_url,down_path):
     tree = html.fromstring(requests.get(srt_url).text)
     rel_dlink = tree.get_element_by_id("downloadButton").get("href")
     dlink = urljoin(DOMAIN, rel_dlink)
-
     # Download srt
-    cur_dir = os.path.abspath(os.getcwd())  # todo - download location
+    cur_dir = down_path  # todo - download location
     filename = "{0}/{1}.zip".format(cur_dir, srt_url.split("/")[-1])
     content = requests.get(dlink).content
-    with open(filename, "wb") as srt:
+    with open(filename, "w+b") as srt:
         srt.write(content)
     if zipfile.is_zipfile(filename):
         with zipfile.ZipFile(filename, 'r') as zip_ref:
-            zip_ref.extractall()
+            zip_ref.extractall(cur_dir)
     os.remove(filename)
-    print(f"\n\tDownload completed..!! and \n\n\tsrt file is in:{cur_dir}")
+    print("\n\tDownload completed..!! and \n\n\tsrt file is in:{}".format(cur_dir))
     input("\n\n\n\tPress any key to continue......")
 
 if __name__ == '__main__':
