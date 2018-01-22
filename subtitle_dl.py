@@ -55,21 +55,14 @@ def subtitles_list(url):
                  i.cssselect("span")[0].text.strip(),
                  i.cssselect("span")[1].text.strip()] for i in elements] # ([url,lang, srt])
     lang_set = set([i.cssselect("span")[0].text.strip() for i in elements])
-    # srt_dict = {i[0]:i[1:] for i in srt_info} # {url:[lang, srt]} to remove
-    # srt_data = [[key, value] for key, value in srt_dict.items()]
     lang_dict = collections.defaultdict()
 
     for lang in lang_set:
         lang_dict[lang] = {i[2]:i[0] for i in srt_info if i[1] == lang} #({srt_name:url})
 
-    # for lang in lang_set:
-    #     lang_dict[lang] = {j[0]:j[1][1] for j in srt_data if j[1][0] == lang}
-
     #  Using ENGLISH Language bydefault now -
     try:
         eng_dict = lang_dict["English"]   #({srt_name:url})
-        # srt_set = set(eng_dict.keys())
-        # srt_list = [[(name,url) for name, url in eng_dict[key]] for key in srt_set]
 
     except KeyError:
         os.system("clear||cls")
@@ -77,7 +70,7 @@ def subtitles_list(url):
         search_srt()
 
     eng_srt = sorted([(url, srt_name) for srt_name, url in eng_dict.items()])[::-1]
-    
+
     page_size = 50
     page_cntr = 1
     page_max = ceil(len(eng_srt) / page_size)
@@ -96,7 +89,7 @@ def subtitles_list(url):
 
         print("\n\tEnter NUMBER or n for the next page ({}/{})".format(page_cntr,page_max))
         chosen = input("\n\tEnter NUMBER> ")
-        if chosen == 'n':
+        if chosen.lower() == 'n':
             if page_cntr >= page_max:
                 page_cntr = 1
             else:
@@ -107,7 +100,8 @@ def subtitles_list(url):
                 if chosen <= len(lang_dict["English"]):
                     break
             except ValueError:
-                pass
+                print(f"\n\tEntered '{chosen}' Need to enter number from the list \n")
+                sleep(2)
 
     os.system("clear||cls")
     print("\n\n\tYou have choosen {}".format(eng_srt[chosen-1][1]))
@@ -154,8 +148,13 @@ def download_srt(srt_url,down_path):
         with zipfile.ZipFile(filename, 'r') as zip_ref:
             zip_ref.extractall(cur_dir)
     os.remove(filename)
-    print("\n\tDownload completed..!! and \n\n\tsrt file is in:{}".format(cur_dir))
-    input("\n\n\n\tPress any key to continue......")
+
+    print(f"\n\tDownload completed..!! and \n\n\tsrt file is in:{cur_dir}")
+
+    after_dl = input("\n\n\tPress ENTER to continue OR e to EXIT >  ")
+    if after_dl.lower() == 'e':
+        print("\n\n\t Thank you....\n\n")
+        raise SystemExit
 
 if __name__ == '__main__':
     try:
