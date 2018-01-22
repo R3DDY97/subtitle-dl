@@ -8,7 +8,7 @@ import requests
 from requests.compat import urljoin
 from lxml import html
 from heading import banners
-
+from math import ceil
 
 # SEARCH = "the+blacklist"
 DOMAIN = "https://subscene.com/"
@@ -34,8 +34,10 @@ def search_srt():
 
     while True:
         os.system("clear||cls")
+
         for num, item in enumerate(cat_urls, 1):
             print(f"\t[{num}]. {item[0]}")
+
         try:
             choosed = int(input("\nEnter NUMBER > "))
             if choosed <= len(cat_urls):
@@ -75,19 +77,38 @@ def subtitles_list(url):
         search_srt()
 
     eng_srt = sorted([(url, srt_name) for srt_name, url in eng_dict.items()])[::-1]
+    
+    page_size = 50
+    page_cntr = 1
+    page_max = ceil(len(eng_srt) / page_size)
+
     while True:
         os.system("clear||cls")
         print(f"\n{len(eng_srt)} subtitles were found:\n")
+
+        selected_start = page_size * (page_cntr - 1)
+        selected_end = page_size * page_cntr
         sleep(1)
-        for num, srt in enumerate(eng_srt, 1):
+
+        for num, srt in enumerate(eng_srt[selected_start:selected_end], selected_start + 1):
             print(f"\t[{num}]. {srt[1]}")
             sleep(0.075)
-        try:
-            chosen = int(input("\n\tEnter NUMBER > "))
-            if chosen <= len(lang_dict["English"]):
-                break
-        except ValueError:
-            pass
+
+        print(f"\n\tEnter NUMBER or n for the next page ({page_cntr}/{page_max})")
+        chosen = input("\n\tEnter NUMBER> ")
+        if chosen == 'n':
+            if page_cntr >= page_max:
+                page_cntr = 1
+            else:
+                page_cntr = page_cntr + 1
+        else:
+            try:
+                chosen = int(chosen)
+                if chosen <= len(lang_dict["English"]):
+                    break
+            except ValueError:
+                pass
+
     os.system("clear||cls")
     print("\n\n\tYou have choosen {}".format(eng_srt[chosen-1][1]))
     download_srt(eng_srt[chosen-1][0])
