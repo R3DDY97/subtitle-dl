@@ -1,7 +1,7 @@
 # subtitle-dl
 Download subtiles for TV shows and Movies
 
-# Installation
+# Instructions
 Download or clone the repository
 
 `git clone https://github.com/R3DDY97/subtitle-dl`
