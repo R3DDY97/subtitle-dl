@@ -150,6 +150,7 @@ def download_srt(srt_url,down_path):
             zip_ref.extractall(cur_dir)
     os.remove(filename)
 
+
     print("\n\tDownload completed..!! and \n\n\tsrt file is in:{}".format(cur_dir))
 
     after_dl = input("\n\n\tPress ENTER to continue OR e to EXIT >  ")
