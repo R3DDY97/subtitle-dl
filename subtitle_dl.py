@@ -100,7 +100,7 @@ def subtitles_list(url):
                 if chosen <= len(lang_dict["English"]):
                     break
             except ValueError:
-                print(f"\n\tEntered '{chosen}' Need to enter number from the list \n")
+                print("\n\tEntered '{}' Need to enter number from the list \n".format(chosen))
                 sleep(2)
 
     os.system("clear||cls")
@@ -141,6 +141,7 @@ def download_srt(srt_url,down_path):
     # Download srt
     cur_dir = down_path  # todo - download location
     filename = "{0}/{1}.zip".format(cur_dir, srt_url.split("/")[-1])
+    filename = os.path.join(cur_dir,srt_url.split("/")[-1]+'.zip')
     content = requests.get(dlink).content
     with open(filename, "w+b") as srt:
         srt.write(content)
@@ -149,7 +150,7 @@ def download_srt(srt_url,down_path):
             zip_ref.extractall(cur_dir)
     os.remove(filename)
 
-    print(f"\n\tDownload completed..!! and \n\n\tsrt file is in:{cur_dir}")
+    print("\n\tDownload completed..!! and \n\n\tsrt file is in:{}".format(cur_dir))
 
     after_dl = input("\n\n\tPress ENTER to continue OR e to EXIT >  ")
     if after_dl.lower() == 'e':
