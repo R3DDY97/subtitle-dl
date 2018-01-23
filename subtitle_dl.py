@@ -2,6 +2,7 @@
 
 import os
 import collections
+# import itertools
 from time import sleep
 import  zipfile
 from math import ceil
@@ -73,38 +74,63 @@ def subtitles_list(url):
     #     language = select_language(lang_list)
     #     eng_dict = lang_dict[language]
     # else:
+
         #  Using ENGLISH Language bydefault now -
     if "English" in lang_set:
         eng_dict = lang_dict["English"]   #({srt_name:url})
     else:
         os.system("clear||cls")
         print("\n English subtitles are not available for this....\n")
+        sleep(2)
         search_srt()
 
     eng_srt = sorted([(url, srt_name) for srt_name, url in eng_dict.items()])[::-1]
+    choose_subtitle(eng_srt)
+
+def select_language(lang_list):
+    while True:
+        os.system("clear||cls")
+        print("\n\n\tChoose language from the list :\n")
+        for num, lang in enumerate(lang_list, 1):
+            print("\t[{}]. {}".format(num, lang))
+            sleep(0.1)
+        try:
+            choice = int(input("\nEnter > "))
+        except ValueError:
+            continue
+        if choice <= len(lang_list):
+            break
+        return lang_list[choice-1]
+
+def choose_subtitle(eng_srt):
 
     page_size = 50
+    page_max = ceil(len(eng_srt)/page_size)
+    # page_cntr = itertools.repeat(range(1, page_max+1))
     page_cntr = 1
-    page_max = ceil(len(eng_srt) / page_size)
 
     while True:
         os.system("clear||cls")
-        print("\n{} subtitles were found:\n".format(len(eng_srt)))
+        print("\n\t\tFound {} subtitles :\n".format(len(eng_srt)))
         sleep(1)
 
-        selected_start = page_size * (page_cntr - 1)
-        selected_end = page_size * page_cntr
+        selected_start = page_size*(page_cntr - 1)
+        selected_end = page_size*page_cntr
 
         for num, srt in enumerate(eng_srt[selected_start:selected_end], selected_start + 1):
             print("\t[{}]. {}".format(num, srt[1]))
             sleep(0.075)
 
-        print("\n\tTo download Enter NUMBER or\n\tFor Next page ({}/{}) : N\n\t\tNew search  : S".format(page_cntr, page_max))
-        chosen = input("\n\tEnter NUMBER > ")
+        if page_max == 1:
+            print("\n\tTo download Enter NUMBER or for\n\n\t\tNew search: S")
+        else:
+            print("\n\tTo download Enter NUMBER or for\n\n\t\tNext page : N\n\t\tNew search: S")
+
+        chosen = input("\nEnter > ")
         if chosen.upper() == 'S':
             os.system("clear||cls")
             search_srt()
-        if chosen.lower() == 'N':
+        if chosen.upper() == 'N':
             if page_cntr >= page_max:
                 page_cntr = 1
             else:
@@ -112,10 +138,9 @@ def subtitles_list(url):
         else:
             try:
                 chosen = int(chosen)
-                if chosen <= len(lang_dict["English"]):
+                if chosen <= len(eng_srt):
                     break
             except ValueError:
-                print(f"\n\tEntered '{chosen}' Need to enter number from the list \n")
                 sleep(2)
 
     os.system("clear||cls")
@@ -137,22 +162,6 @@ def subtitles_list(url):
         download_srt(eng_srt[chosen-1][0], default_path)
     else:
         download_srt(eng_srt[chosen-1][0], down_path)
-
-
-def select_language(lang_list):
-    while True:
-        os.system("clear||cls")
-        print("\n\n\tChoose language from the list :\n")
-        for num, lang in enumerate(lang_list, 1):
-            print("\t[{}]. {}".format(num, lang))
-            sleep(0.1)
-        try:
-            choice = int(input("\nEnter > "))
-        except ValueError:
-            continue
-        if choice <= len(lang_list):
-            break
-    return lang_list[choice-1]
 
 
 
