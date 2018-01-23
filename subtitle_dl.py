@@ -50,7 +50,8 @@ def search_srt():
                 break
         except ValueError:
             pass
-    print("\nYou have choosen {}".format(cat_urls[choosed-1][0]))
+    print("\n\tYou have choosen '{}'".format(cat_urls[choosed-1][0]))
+    sleep(1)
     subtitles_list(cat_urls[choosed-1][1])
 
 
@@ -131,7 +132,7 @@ def choose_subtitle(eng_srt):
             os.system("clear||cls")
             search_srt()
         if chosen.upper() == 'N':
-            if page_cntr >= page_max:
+            if page_cntr >= page_max and page_max > 1:
                 page_cntr = 1
             else:
                 page_cntr = page_cntr + 1
@@ -141,24 +142,17 @@ def choose_subtitle(eng_srt):
                 if chosen <= len(eng_srt):
                     break
             except ValueError:
-                sleep(2)
+                pass
 
     os.system("clear||cls")
-    print("\n\n\tYou have choosen {}".format(eng_srt[chosen-1][1]))
-    if os.sys.platform == 'linux' or os.sys.platform == 'darwin':
-        default_path = "{}/Downloads".format(os.path.expanduser("~"))
-    else:
-        default_path = "{}\\Downloads".format(os.path.expanduser("~"))
-
+    print("\n\n\tYou have choosen '{}'".format(eng_srt[chosen-1][1]))
+    default_path = os.path.join(os.path.expanduser("~"), "Downloads")
     down_path = os.path.expanduser(input('\n\tChoose download directory path: '))
-    # while not os.path.isdir(down_path) or not os.access(down_path, os.W_OK):
-    #     if not os.access(down_path, os.W_OK):
-    #         down_path = input('\n\tWrite permission not available.\n\tChoose another directory:')
-    #     elif not os.path.isdir(down_path):
-    #         down_path = input('\n\tDirectory does not exists.\n\tChoose download directory:')
     if not os.path.isdir(down_path) or not os.access(down_path, os.W_OK):
-        print("\n\n\t {} is either doesn't exist or with no write permissions".format(down_path))
-        print("\n\tDownloading in default Downloads folder")
+        print("\n\n\t'{}' path either DOESN'T EXIST or with NO write permissions".format(down_path))
+        sleep(1)
+        print("\n\tDownloading in {}".format(default_path))
+        sleep(1)
         download_srt(eng_srt[chosen-1][0], default_path)
     else:
         download_srt(eng_srt[chosen-1][0], down_path)
@@ -169,26 +163,20 @@ def download_srt(srt_url,down_path):
     tree = html.fromstring(requests.get(srt_url).text)
     rel_dlink = tree.get_element_by_id("downloadButton").get("href")
     dlink = urljoin(DOMAIN, rel_dlink)
+
     # Download srt
     cur_dir = down_path  # todo - download location
-
-    #filename = "{0}/{1}.zip".format(cur_dir, srt_url.split("/")[-1])
-    filename = os.path.join(cur_dir,srt_url.split("/")[-1]+'.zip')
+    filename = os.path.join(cur_dir, srt_url.split("/")[-1]+'.zip')
     content = requests.get(dlink).content
     with open(filename, "w+b") as srt:
         srt.write(content)
     if zipfile.is_zipfile(filename):
         with zipfile.ZipFile(filename, 'r') as zip_ref:
+            srt_name = zip_ref.namelist()
             zip_ref.extractall(cur_dir)
     os.remove(filename)
-    # print("\n\tDownload completed..!! and \n\n\tFile location:{}".format(cur_dir))
-
-    print("\n\tDownload completed..!! and \n\n\tsrt file is in:{}".format(cur_dir))
-
-    after_dl = input("\n\n\tPress ENTER to continue OR e to EXIT >  ")
-    if after_dl.lower() == 'e':
-        print("\n\n\t Thank you....\n\n")
-        raise SystemExit
+    print("\n\tDownloaded '{0}' in '{1}'".format(srt_name[0], cur_dir))
+    sleep(5)
 
 
 if __name__ == '__main__':
