@@ -171,7 +171,8 @@ def download_srt(srt_url,down_path):
     dlink = urljoin(DOMAIN, rel_dlink)
     # Download srt
     cur_dir = down_path  # todo - download location
-    filename = "{0}/{1}.zip".format(cur_dir, srt_url.split("/")[-1])
+    # filename = "{0}/{1}.zip".format(cur_dir, srt_url.split("/")[-1])
+    filename = os.path.join(cur_dir, (srt_url.split("/")[-1]+'.zip'))
     content = requests.get(dlink).content
     with open(filename, "w+b") as srt:
         srt.write(content)
