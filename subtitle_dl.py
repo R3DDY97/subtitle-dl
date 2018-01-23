@@ -141,7 +141,7 @@ def choose_subtitle(eng_srt):
                 if chosen <= len(eng_srt):
                     break
             except ValueError:
-                sleep(2)
+                pass
 
     os.system("clear||cls")
     print("\n\n\tYou have choosen {}".format(eng_srt[chosen-1][1]))
