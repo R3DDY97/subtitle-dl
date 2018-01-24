@@ -131,8 +131,9 @@ def choose_subtitle(eng_srt):
         if chosen.upper() == 'S':
             os.system("clear||cls")
             search_srt()
-        if chosen.upper() == 'N':
-            if page_cntr >= page_max and page_max > 1:
+        if chosen.upper() == 'N' and page_max > 1:  
+            # Only change page if page_max is bigger than 1 (and chosen = 'N')
+            if page_cntr >= page_max:
                 page_cntr = 1
             else:
                 page_cntr = page_cntr + 1
