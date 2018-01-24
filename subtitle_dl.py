@@ -51,7 +51,6 @@ def search_srt():
         except ValueError:
             pass
     print("\n\tYou have choosen '{}'".format(cat_urls[choosed-1][0]))
-    sleep(1)
     subtitles_list(cat_urls[choosed-1][1])
 
 
@@ -131,7 +130,7 @@ def choose_subtitle(eng_srt):
         if chosen.upper() == 'S':
             os.system("clear||cls")
             search_srt()
-        if chosen.upper() == 'N' and page_max > 1:  
+        if chosen.upper() == 'N' and page_max > 1:
             # Only change page if page_max is bigger than 1 (and chosen = 'N')
             if page_cntr >= page_max:
                 page_cntr = 1
@@ -148,7 +147,7 @@ def choose_subtitle(eng_srt):
     os.system("clear||cls")
     print("\n\n\tYou have choosen '{}'".format(eng_srt[chosen-1][1]))
     default_path = os.path.join(os.path.expanduser("~"), "Downloads")
-    down_path = os.path.expanduser(input('\n\tChoose download directory path: '))
+    down_path = os.path.abspath(os.path.expanduser(input('\n\tChoose download dir path (eg: In linux "./ " sets it to pwd): ')))
     if not os.path.isdir(down_path) or not os.access(down_path, os.W_OK):
         print("\n\n\t'{}' path either DOESN'T EXIST or with NO write permissions".format(down_path))
         sleep(1)
@@ -177,7 +176,7 @@ def download_srt(srt_url,down_path):
             zip_ref.extractall(cur_dir)
     os.remove(filename)
     print("\n\tDownloaded '{0}' in '{1}'".format(srt_name[0], cur_dir))
-    sleep(5)
+    sleep(4)
 
 
 if __name__ == '__main__':
